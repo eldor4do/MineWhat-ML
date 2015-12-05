@@ -51,16 +51,24 @@ def predict():
 	with open('products.csv','rb') as f:
 		firstLine = False
 		mycsv = csv.reader(f)
+		outCsv = open('products_predicted.csv','wb')
+		csvWriter = csv.writer(outCsv)
 		for row in mycsv:
 				if firstLine == False:
 					firstLine = True
+					newRow = row
+					csvWriter.writerow(newRow)
 				else:
+					newRow = row
 					p1 = row[5]
 					p2 = row[6]
 					p4 = int(row[8])
 					if len(p1) == 0:
 						predictedValue = regr1.predict(p4)
+						newRow[5] = int(predictedValue)
 					if len(p2) == 0:
 						predictedValue = regr2.predict(p4)
+						newRow[6] = int(predictedValue)
+					csvWriter.writerow(newRow)
 
 predict()

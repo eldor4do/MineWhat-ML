@@ -60,12 +60,15 @@ def train():
 	classifier = nltk.NaiveBayesClassifier.train(trainingSet)
 	
 	# Now to classify
+	outCsv = open('products_categorised.csv','wb')
+	csvWriter = csv.writer(outCsv)
 	with open('products.csv','rb') as f:
 		firstLine = False
 		mycsv = csv.reader(f)
 		for row in mycsv:
 			if firstLine == False:
 				firstLine = True
+				csvWriter.writerow(row)
 			else:
 				cat = row[3]
 				name = row[1]
@@ -73,6 +76,10 @@ def train():
 				info = str(info)
 				info = info.strip('\'"')
 				if cat == '["uncategorised"]':
-					print classifier.classify(extract_features(featureWords, name, info))
-
+					category = classifier.classify(extract_features(featureWords, name, info))
+					newRow = row
+					newRow[3] = category
+					csvWriter.writerow(newRow)
+				else:
+					csvWriter.writerow(row)	
 train()
